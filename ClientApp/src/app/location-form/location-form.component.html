@@ -1,0 +1,29 @@
+<p *ngIf="errorMessage">{{this.errorMessage}}</p>
+<form [formGroup]="locationForm">
+  <div class="form-group">
+    <label>
+      Name:
+      <input type="text" formControlName="name" />
+    </label>
+    <br/>
+    <label>
+      Address:
+      <textarea formControlName="address" rows="4"></textarea>
+    </label>
+    <br/>
+    <label>
+      Phone:
+      <input type="number" formControlName="phone" />
+    </label>
+    <br/>
+    <label>
+      Email:
+      <input type="text" formControlName="email" />
+    </label>
+  </div>
+
+  <button (click)="actions()">Submit</button>
+</form>
+<br />
+<p>Pin your location below</p>
+<app-map [type]="type" [locationID]="locationID" [locationList]="currentLocation"></app-map>

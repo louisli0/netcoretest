@@ -1,0 +1,36 @@
+<div class="container">
+  <a routerLink="/location-form">Create New Location</a>
+  <div class="row">
+    <div class="col-sm-auto">
+      <div *ngIf="locations.length > 0; else noData">
+        <table class="table table-bordered">
+          <thead>
+          <th scope="col">Name</th>
+          <th scope="col">Address</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Email</th>
+          <th scope="col">Actions</th>
+          </thead>
+          <tbody *ngFor="let location of locations">
+            <tr>
+              <td>{{ location.locationData.name }}</td>
+              <td>{{ location.locationData.address }}</td>
+              <td>{{ location.locationData.phoneNumber }}</td>
+              <td>{{ location.locationData.emailAddress }}</td>
+              <td>
+                <button type="button" class="btn btn-primary" (click)='mapFind(location.coordinateData)'>Find</button>
+                <button type="button" class="btn btn-primary" (click)="edit(location.locationData.locationId)">Edit</button>
+                <button type="button" class="btn btn-primary" (click)="delete(location.locationData.locationId)">Delete</button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noData>No Data</ng-template>
+    </div>
+    <div class="col">
+      <app-map [type]="type" [locationList]="locations"></app-map>
+    </div>
+  </div>
+</div>

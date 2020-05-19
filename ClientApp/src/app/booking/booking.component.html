@@ -1,0 +1,22 @@
+
+<h5>Your Bookings</h5>
+<a routerLink="/booking-form">Create new Booking</a>
+<div *ngIf="allBookings; else noData">
+  <div class="card" *ngFor="let booking of allBookings">
+    <div class="card-body">
+      <h5 class="card-title">Booking on: {{booking.bookedFor}} at {{ booking.bookedTime}} </h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{ booking.locationID }}</h6>
+      <p class="card-text">
+        Created: {{ booking.createdOn}} at {{ booking.createdTime}}<br />
+        Location: {{ booking.locationName}}<br />
+        Location Phone: {{ booking.locationPhone }}<br />
+        Cancelled: {{ booking.status == true ? "Yes" : "No"}}
+      </p>
+    </div>
+    <div class="card-footer">
+      <button type="button" (click)="change(booking.idBooking)">Change</button>
+      <button type="button" (click)="cancel(booking.idBooking)">Cancel</button>
+    </div>
+  </div>
+</div>
+<ng-template #noData>No Data</ng-template>

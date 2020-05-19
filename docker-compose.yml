@@ -1,0 +1,10 @@
+version: '3.0'
+services:
+    sqlServer:
+        container_name: sqlServer19
+        image: mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-16.04
+        environment:
+            - ACCEPT_EULA=y
+            - SA_PASSWORD=Password123_
+        ports:
+            - "1433:1433"

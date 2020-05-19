@@ -1,0 +1,27 @@
+<p *ngIf="errorMessage">{{ this.errorMessage}} </p>
+<form [formGroup]="bookingForm">
+
+  <div class="form-group">
+    <label>
+      Appointment Date:
+      <input type="date" class="form-control" formControlName="date" />
+    </label>
+    <br />
+    <label>
+      Time:
+      <input type="time" class="form-control" formControlName="time"/>
+    </label>
+    <br />
+    <div *ngIf="locationList!= undefined; else noData">
+      <label>
+        Location:
+        <select formControlName="location" class="custom-select">
+          <option *ngFor="let location of locationList" value={{location.locationId}}>{{location.name}}</option>
+        </select>
+      </label>
+    </div>
+  </div>
+    <ng-template #noData>Location data not avail.</ng-template>
+</form>
+
+<button type="button" (click)="determineAction()" class="btn btn-primary">Submit</button>
