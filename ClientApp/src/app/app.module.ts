@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
+import { initialiser } from '../utils/app-init';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -30,7 +31,6 @@ import { BookingFormComponent } from './booking-form/booking-form.component';
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    LeafletModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -40,9 +40,17 @@ import { BookingFormComponent } from './booking-form/booking-form.component';
       { path: 'booking-form/:id', component: BookingFormComponent },
       { path: 'location-form', component: LocationFormComponent },
       { path: 'location-form/:id', component: LocationFormComponent }
-    ])
+    ]),
+    KeycloakAngularModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initialiser,
+      multi: true,
+      deps: [KeycloakService]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
