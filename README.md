@@ -1,0 +1,2 @@
+# sample
+.Net Core test
