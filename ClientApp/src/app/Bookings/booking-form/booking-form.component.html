@@ -1,0 +1,57 @@
+<div class="container">
+  <mat-toolbar>
+    <h5>New Booking</h5>
+  </mat-toolbar>
+  <mat-card>
+    <mat-grid-list cols="2" rowHeight="250px">
+      <mat-grid-tile>
+        <form [formGroup]="bookingForm">
+          <mat-form-field>
+            <mat-label>Date:</mat-label>
+            <input matInput type="date" [(min)]="todayDate" formControlName="date" required>
+            <mat-error *ngIf="bookingForm.get('date').hasError">Required</mat-error>
+          </mat-form-field>
+          <br />
+          <mat-form-field>
+            <mat-label>Time:</mat-label>
+            <input matInput type="time" formControlName="time" required/>
+            <mat-error *ngIf="bookingForm.get('time').hasError">Required</mat-error>
+          </mat-form-field>
+          <br />
+          <div *ngIf="locationList; else noData">
+            <mat-form-field>
+              <mat-label>Location</mat-label>
+              <mat-select formControlName="location" required>
+                <mat-option *ngFor="let location of locationList" [value]="location.id">{{location.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="bookingForm.get('location').hasError">Required</mat-error>
+            </mat-form-field>
+          </div>
+          <ng-template #noData>Location data not avail.</ng-template>
+        </form>
+      </mat-grid-tile>
+      <mat-divider [vertical]="true"></mat-divider>
+
+      <mat-grid-tile>
+        <mat-card>
+          <div *ngIf="bookingForm.get('location').value; else locNotSelected">
+            <div *ngFor="let location of locationList">
+              <div *ngIf="location.id == bookingForm.get('location').value">
+                <p>{{ location.name }}</p>
+                <mat-list role="list">
+                  <mat-list-item>Address: {{ location.address }} </mat-list-item>
+                  <mat-list-item>Phone: {{ location.phone }}</mat-list-item>
+                </mat-list>
+              </div>
+            </div>
+          </div>
+          <ng-template #locNotSelected>
+            <p>No Location Selected</p>
+          </ng-template>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <button mat-button type="button" (click)="determineAction()">Submit</button>
+  </mat-card>
+</div>

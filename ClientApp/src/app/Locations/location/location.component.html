@@ -1,0 +1,41 @@
+<div class="container">
+  <mat-toolbar>
+    Locations
+  </mat-toolbar>
+  <mat-card>
+    <div *ngIf="locations; else noData">
+      <table mat-table [dataSource]="locations">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let locations"> {{locations.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let locations"> {{locations.address}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef> Phone </th>
+          <td mat-cell *matCellDef="let locations">
+            <a id="phone" href="{{'tel:'+locations.phone}}">{{locations.phone}}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let locations">
+            <button mat-button matTooltip="Find" (click)='mapFind(locations.coordinates)'>
+              <mat-icon>room</mat-icon>Find
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    <ng-template #noData>No Data</ng-template>
+    <app-map [type]="type" [locationList]="locations"></app-map>
+  </mat-card>
+</div>

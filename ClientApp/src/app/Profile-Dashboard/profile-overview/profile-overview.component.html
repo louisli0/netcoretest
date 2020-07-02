@@ -1,0 +1,14 @@
+<mat-sidenav-container class="profiledashboard-container">
+    <mat-sidenav mode="side" fixedTopGap="64" opened class="profile-sidenav">
+        <mat-list>
+          <mat-list-item><a mat-button [routerLink]="['/profile']">Overview</a></mat-list-item>
+            <div mat-subheader>Bookings</div>
+            <mat-list-item><button mat-button [routerLink]="['bookings']">All bookings</button></mat-list-item>
+            <div mat-subheader>Location</div>
+            <mat-list-item><button mat-button [routerLink]="['location']">See Locations</button></mat-list-item>
+        </mat-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="container-content">
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

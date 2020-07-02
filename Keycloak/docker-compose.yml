@@ -14,7 +14,7 @@ services:
 
   keycloak:
     container_name: keycloak
-    image: quay.io/keycloak/keycloak:10.0.1
+    image: quay.io/keycloak/keycloak:10.0.2
     depends_on: 
       - postgres
     environment:
@@ -25,7 +25,9 @@ services:
     - DB_PASSWORD=root
     ports:
     - "8080:8080"
+    - "8443:8443"
     networks:
       - keyCloakNetwork
+
 networks:
   keyCloakNetwork:

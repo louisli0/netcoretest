@@ -13,20 +13,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="NetTopologySuite" Version="2.0.0" />
+    <PackageReference Include="Newtonsoft.json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\app\alert\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\app\alert\**" />
+    <EmbeddedResource Remove="ClientApp\src\app\alert\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\src\app\alert\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -35,6 +44,20 @@
     <Compile Remove="Migrations\20200428004300_Bookings.Designer.cs" />
     <Compile Remove="Migrations\20200428013121_Bookings.cs" />
     <Compile Remove="Migrations\20200428013121_Bookings.Designer.cs" />
+    <Compile Remove="Migrations\20200604001022_db.cs" />
+    <Compile Remove="Migrations\20200604001022_db.Designer.cs" />
+    <Compile Remove="Migrations\20200604001136_db.cs" />
+    <Compile Remove="Migrations\20200604001136_db.Designer.cs" />
+    <Compile Remove="Migrations\20200604010842_Initial.cs" />
+    <Compile Remove="Migrations\20200604010842_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200604035856_initial.cs" />
+    <Compile Remove="Migrations\20200604035856_initial.Designer.cs" />
+    <Compile Remove="Migrations\20200604061410_initial.cs" />
+    <Compile Remove="Migrations\20200604061410_initial.Designer.cs" />
+    <Compile Remove="Migrations\20200605235738_Initial.cs" />
+    <Compile Remove="Migrations\20200605235738_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200611051713_test.cs" />
+    <Compile Remove="Migrations\20200611051713_test.Designer.cs" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

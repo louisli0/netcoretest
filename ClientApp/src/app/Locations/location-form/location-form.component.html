@@ -1,0 +1,33 @@
+  <mat-toolbar>
+    Location
+  </mat-toolbar>
+  <mat-card>
+    <form [formGroup]="locationForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>Address</mat-label>
+        <textarea matInput formControlName="address" rows="4"></textarea>
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+    </form>
+    <br />
+    <button (click)="actions()">Submit</button>
+  </mat-card>
+  <br />
+  <mat-card>
+    <p>Pin your location below</p>
+    <app-map [type]="type" [locationID]="locationID" [locationList]="currentLocation"></app-map>
+  </mat-card>
