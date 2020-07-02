@@ -1,0 +1,18 @@
+<mat-toolbar>
+  <p>Overview</p>
+</mat-toolbar>
+
+<mat-card class="card">
+  <mat-card-content *ngIf="(user | async) as u ; else noClaims" class="card-content">
+    <p>Name: {{u.name }}</p>
+    <p>Email: {{ u.email }}</p>
+    <p>Contact Number: {{ u.phone }}</p>
+  </mat-card-content>
+  <ng-template #noClaims>
+    <p>Not Logged in or error retrieving data</p>
+  </ng-template>
+  <mat-card-actions>
+    <mat-divider [inset]="true"></mat-divider>
+    <a mat-button [routerLink]="['account']">Edit Details</a>
+  </mat-card-actions>
+</mat-card>

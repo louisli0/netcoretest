@@ -1,70 +1,73 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { AccountService } from './account.service';
+import { Observable } from 'rxjs';
+import { Locations } from './Models/Locations';
+import { SnackbarService } from './snackbar.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class LocationService {
-  locationList;
   coords;
-
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
+    private snackBar : SnackbarService,
+    private accountService: AccountService,
     private route: ActivatedRoute) {
   }
 
-  returnList() {
-    return this.http.get('/location/get');
+  returnList() : Observable<Locations>{
+    return this.http.get<Locations>('api/location/get');
   }
 
-  getLocationID(data) {
+  getLocationID(data): Observable<Locations> {
     console.log("Getting Location data for ID:", data);
-    return this.http.get('/location/get/' + data)
+    return this.http.get<Locations>('api/location/get/' + data)
   }
 
-  addLocation(data) {
-    let send = {
-      name: data.value.name,
-      phoneNumber: data.value.phone,
-      emailAddress: data.value.email,
-      address: data.value.address
-    };
+  getUserOwnedLocations() : Observable<Locations> {
+    let userID = this.accountService.getLocalUserID();
+    return this.http.get<Locations>('api/location/getUser/' + userID);
+  }
 
-    //Verify Marker Data
+  async addLocation(data) {
     if (this.coords != null) {
+      let send = {
+        name: data.value.name,
+        phoneNumber: data.value.phone,
+        emailAddress: data.value.email,
+        address: data.value.address,
+        lat: this.coords.lat,
+        lng: this.coords.lng
+      };
       console.log("Sending Location Data", send);
-      this.http.post('/location/add', send).subscribe(data => {
-        //Add Coordinates
-        console.log("Location Add returned", data);
-        
-        let sendCoords = {
-          locationID: data,
-          latitude: this.coords.lat.toString(),
-          longitude: this.coords.lng.toString()
-        };
-        console.log("Sending Coordinates", sendCoords);
-        this.http.post('/location/addCoordinates', sendCoords).subscribe(data => {
-          console.log("Coordinates", data);
-        })
+
+      this.http.post('api/location/add', send).subscribe(data => {
+        console.log("New LocationID:", data);
+        this.accountService.addLocationID(data);
       })
     } else {
-      console.log("No Marker");
+      console.log("No Marker Coordinates");
     }
   }
 
   editLocation(data) {
     console.log("Edit Location", data);
-
+    
     let send = {
       locationId: data.locationId,
       name: data.newValues.name,
       phoneNumber: data.newValues.phone,
       emailAddress: data.newValues.email,
-      address: data.newValues.address
+      address: data.newValues.address,
+      lat: this.coords == undefined ? data.prev.coordinates.lat : this.coords.lat,
+      lng: this.coords == undefined ? data.prev.coordinates.lng : this.coords.lng,
     };
 
-    this.http.post('/location/edit/', send).subscribe(data => {
+    this.http.post('api/location/edit/', send).subscribe(data => {
       console.log("Edit Returned", data);
     }),
       error => {
@@ -72,26 +75,14 @@ export class LocationService {
       }, () => {
         console.log("No Error on edit");
       }
-
-    let sendCoords = {
-      locationID: data.locationId,
-      latitude: this.coords.lat.toString(),
-      longitude: this.coords.lng.toString()
-    }
-
-    this.http.post('/location/editCoordinates', sendCoords).subscribe(data => {
-      console.log("Coords Controller returned", data);
-    }, error => {
-      console.log("Coordinate error", error);
-    })
   }
 
   removeLocation(data) {
-    console.log("Remove Location ID", data);
-    return this.http.post('/location/delete/', data);
+    console.log("Remove Location", data);
+    return this.http.post('api/location/delete/', data);
   }
 
-  editCoordinates(data) {
+  editCoordinates(data) : void {
     this.coords = data.coords;
   }
 }

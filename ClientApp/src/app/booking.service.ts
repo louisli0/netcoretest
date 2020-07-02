@@ -1,53 +1,84 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AccountService } from './account.service';
+import { SnackbarService } from './snackbar.service';
+import { LocationBooking } from './Models/Locations';
+import { Bookings } from './Models/Bookings';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class BookingService {
-  bookingList;
+  userID: string;
+
   constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute) {
+    private snackbar: SnackbarService,
+    private accountService: AccountService,
+    private http: HttpClient) {
   }
 
-  returnAll() {
-    return this.http.get('/booking');
+  returnLocationBookings(data: Number): Observable<LocationBooking> {
+    return this.http.get<LocationBooking>('/api/location/bookings/' + data);
   }
 
-  returnSpecific(id: Number) {
-    let param = new HttpParams().set('id', id.toString());
-    return this.http.get('/booking/get/', { params: param });
+  returnUserBookings(): Observable<Bookings> {
+    console.log(this.accountService.getLocalUserID());
+    
+    return this.http.get<Bookings>('api/booking/user/' + this.accountService.getLocalUserID());
   }
 
-  addNew(data) {
-    let test = {
-      "createdOn": new Date().toJSON(),
-      "bookedFor": new Date(data.value.date + " " + data.value.time).toJSON(),
-      "locationID": parseInt(data.value.location),
-      "status": false
-    }
-    return this.http.post('booking/add', test)
+  returnSpecific(id: Number): Observable<Bookings> {
+    return this.http.get<Bookings>('api/booking/get/' + id);
   }
 
-  editExisting(data) {
-    let send = {
-      bookingID: data.bookingID,
-      createdOn: data.createdOn,
-      bookedFor: new Date(data.newValues.date + " " + data.newValues.time).toJSON(),
-      locationID: parseInt(data.newValues.location),
+  addNew(data): void {
+    const newBooking = {
+      createdOn: new Date().toJSON(),
+      bookedFor: new Date(data.value.date + " " + data.value.time).toJSON(),
       status: false,
-      RowVersion: data.rowVersion
+      userID: this.accountService.getUserID(),
+      locationID: parseInt(data.value.location)
     }
-    return this.http.post('/booking/edit/', send)
+    this.http.post('api/booking/add', newBooking).subscribe(() => {
+      this.snackbar.notification.next("Added new booking!");
+    }, () => {
+      this.snackbar.notification.next("Failed to create booking");
+    })
   }
 
-  cancelBooking(data: Number) {
-    //Change status to false
-    console.log("Cancel Booking", data);
-    let sendId = { id: data };
-    return this.http.post('/booking/updateStatus/', data)
+  editExisting(data): void {
+    const bookingObj = {
+      bookingID: data.id,
+      bookedFor: new Date(data.newValues.date + " " + data.newValues.time).toJSON(),
+      locations: parseInt(data.newValues.location),
+      status: false,
+      user: this.userID,
+      RowVersion: data.revision
+    }
+
+    this.http.post('api/booking/edit/', bookingObj).subscribe(() => {
+      this.snackbar.notification.next("Booking Changed!");
+    }, () => {
+      this.snackbar.notification.next("Unable to change booking");
+    })
   }
-}
+
+  editStatus(data): void {
+    if (data.status == "Confirmed") {
+      data.status = false;
+    } else {
+      data.status = true;
+    }
+    this.http.post('api/booking/confirmStatus', data).subscribe(() => {
+      if (data.status) {
+        this.snackbar.notification.next("Confirmed!");
+      } else {
+        this.snackbar.notification.next("Cancelled!");
+      }
+    }, () => {
+      this.snackbar.notification.next("Error confirming status!");
+    })
+  }
+} 

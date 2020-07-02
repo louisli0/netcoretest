@@ -1,12 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/leaflet/dist/leaflet.css";
 /* Provide sufficient contrast against white background */
+/* Importing Bootstrap SCSS file. */
+// @import '~bootstrap/scss/bootstrap';
 
-// @media(prefers-color-scheme: dark) {
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-//     body {
-//         background-color: grey;
-//     }
-    
-    
-// }
+router-outlet {
+    position: absolute;
+  }
+
+app {
+    min-height: calc(100% - 60px);
+}
+  
+.container {
+    position: absolute;
+    top: 60px;
+    bottom: 60px;
+    right: 0;
+    left: 0;
+    padding: 10px 10px 10px 10px;
+}

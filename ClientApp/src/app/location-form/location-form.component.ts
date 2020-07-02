@@ -15,6 +15,8 @@ export class LocationFormComponent implements OnInit {
   locationID: String;
   type: String;
   currentLocation;
+  errorMessage;
+  
   locationForm = new FormGroup({
     name: new FormControl('', Validators.required),
     phone: new FormControl('', Validators.required),

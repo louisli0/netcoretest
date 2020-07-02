@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 
 namespace bookingsApp.Migrations
 {
@@ -14,30 +15,9 @@ namespace bookingsApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Coordinates", b =>
-                {
-                    b.Property<int>("coordID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("latitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("locationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("longitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("coordID");
-
-                    b.ToTable("Coordinates");
-                });
 
             modelBuilder.Entity("Location", b =>
                 {
@@ -46,8 +26,16 @@ namespace bookingsApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<string>("address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Point>("coordinates")
+                        .HasColumnType("geography");
 
                     b.Property<string>("emailAddress")
                         .HasColumnType("nvarchar(max)");
@@ -60,7 +48,7 @@ namespace bookingsApp.Migrations
 
                     b.HasKey("locationId");
 
-                    b.ToTable("Location");
+                    b.ToTable("locations");
                 });
 
             modelBuilder.Entity("bookingsApp.Models.Bookings", b =>
@@ -81,15 +69,87 @@ namespace bookingsApp.Migrations
                     b.Property<DateTime>("createdOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("locationID")
+                    b.Property<int?>("locationId")
                         .HasColumnType("int");
 
                     b.Property<bool>("status")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("userID")
+                        .HasColumnType("int");
+
                     b.HasKey("bookingID");
 
-                    b.ToTable("Bookings");
+                    b.HasIndex("locationId");
+
+                    b.HasIndex("userID");
+
+                    b.ToTable("bookings");
+                });
+
+            modelBuilder.Entity("bookingsApp.Models.LocationStaff", b =>
+                {
+                    b.Property<int>("locationID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("userID")
+                        .HasColumnType("int");
+
+                    b.HasKey("locationID", "userID");
+
+                    b.HasIndex("userID");
+
+                    b.ToTable("staff");
+                });
+
+            modelBuilder.Entity("bookingsApp.Models.User", b =>
+                {
+                    b.Property<int>("userID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("phone")
+                        .HasColumnType("int");
+
+                    b.Property<string>("uuid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("userID");
+
+                    b.ToTable("users");
+                });
+
+            modelBuilder.Entity("bookingsApp.Models.Bookings", b =>
+                {
+                    b.HasOne("Location", "location")
+                        .WithMany("bookings")
+                        .HasForeignKey("locationId");
+
+                    b.HasOne("bookingsApp.Models.User", "user")
+                        .WithMany("bookings")
+                        .HasForeignKey("userID");
+                });
+
+            modelBuilder.Entity("bookingsApp.Models.LocationStaff", b =>
+                {
+                    b.HasOne("Location", "location")
+                        .WithMany("staff")
+                        .HasForeignKey("locationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("bookingsApp.Models.User", "user")
+                        .WithMany("locations")
+                        .HasForeignKey("userID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

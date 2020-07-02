@@ -1,2 +1,1 @@
-# sample
-.Net Core test
+# netCoreBookings
